@@ -18,8 +18,6 @@ while continue
   end
 end
 
-player_1 = Player.new(name_1, token_1)
-
 while true
   puts "Please put the name of player 2:"
   name_2 = gets.chomp
@@ -32,28 +30,25 @@ while true
   end
 end
 
-if player_1.token == "o"
+if token_1 == "o"
   token_2 = "x"
-  player_2 = Player.new(name_2, token_2)
-  puts "your token is #{player_2.token}."
-elsif player_1.token == 'x'
+  puts "your token is #{token_2}."
+elsif token_1 == 'x'
   token_2 = "o"
-  player_2 = Player.new(name_2, token_2)
-  puts "your token is #{player_2.token}."
+  puts "your token is #{token_2}."
 end
 
-new_game = Game.new(player_1, player_2, Board.new(7,7))
+player_1 = Player.new(name_1, token_1)
+player_2 = Player.new(name_2, token_2)
+new_board = Board.new(7,7)
+new_game = Game.new(player_1, player_2, new_board)
 game_board = new_game.board.board
-count = game_board.length
-game_board.each do |row|
-  line = ""
-  row.each do |space|
-    if space == nil
-      space = " _ "
-      line = line + space
-    end
-  end
-  puts "#{count} | #{line} |"
-  count -= 1
+column_size = game_board.first.length
+show_board = new_game.display_board
+
+while true
+  player_1_drop = new_game.token_drop(player_1)
+  new_game.display_board
+  player_2_drop = new_game.token_drop(player_2)
+  new_game.display_board
 end
-binding.pry
