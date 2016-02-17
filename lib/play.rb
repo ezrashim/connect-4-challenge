@@ -47,8 +47,15 @@ column_size = game_board.first.length
 show_board = new_game.display_board
 
 while true
-  player_1_drop = new_game.token_drop(player_1)
-  new_game.display_board
-  player_2_drop = new_game.token_drop(player_2)
-  new_game.display_board
+  new_game.token_drop(player_1)
+
+  if new_game.game == true
+    puts "#{new_game.player_1.name} wins!!!"
+    break
+  end
+  new_game.token_drop(player_2)
+  if new_game.game == true
+    puts "#{new_game.player_2.name} wins!!!"
+    break
+  end
 end
