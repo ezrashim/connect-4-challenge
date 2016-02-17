@@ -119,7 +119,7 @@ class Game
     token_row = board.board.reverse[row]
     column = number - 1
     token_placement = board.board.reverse[row][column]
-    
+
     connect = 0
     counter_up = 0
     counter_down = 1
@@ -161,7 +161,6 @@ class Game
         connect += 1
         counter_up += 1
         if connect >= 4
-          binding.pry
           puts "diagonal connect 4!"
           @game = true
           break
@@ -176,7 +175,6 @@ class Game
         connect += 1
         counter_down += 1
         if connect >= 4
-          binding.pry
           puts "diagonal connect 4!"
           @game = true
           break
