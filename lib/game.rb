@@ -2,12 +2,12 @@ require './player'
 require './board'
 
 class Game
-  attr_accessor :player_1, :player_2, :board, :game
+  attr_accessor :player_1, :player_2, :board, :game_end
   def initialize(player_1, player_2, board)
     @player_1 = player_1
     @player_2 = player_2
     @board = board
-    @game = false
+    @game_end = false
   end
 
   def display_board
@@ -40,25 +40,25 @@ class Game
 
   def token_drop(player)
     puts "#{player.name}'s turn. Please choose the number to drop your token."
-    number = gets.chomp.to_i
+    column = gets.chomp.to_i - 1
     board_rows = board.board
     column_size = board.board.first.length
     row_size = board.board.length
     row = 0
-    @game = false
+    @game_end = false
     while true
-      if (number >= 1) && (number <= column_size) && (row < row_size) && (board_rows.reverse[row][number - 1] == nil)
+      if (column >= 0) && (column < column_size) && (row < row_size) && (board_rows.reverse[row][column] == nil)
         token_row = board_rows.reverse[row]
-        token_row[number - 1] = player.token
-        connect_4?(row, number, player)
-        if @game == true
+        token_row[column] = player.token
+        connect_4?(row, column, player)
+        if @game_end == true
           break
         end
         row = 0
         break
-      elsif (number < 1) || (number > column_size) || (row >= row_size)
+      elsif (column < 0) || (column >= column_size) || (row >= row_size)
         puts "That can't be done #{player.name}. Please pick another column number."
-        number = gets.chomp.to_i
+        column = gets.chomp.to_i - 1
         row = 0
       else
         row += 1
@@ -68,56 +68,66 @@ class Game
   end
 
 
-  def horizontal_connect?(row, number, player)
+  def horizontal_connect?(row, column, player)
     column_size = board.board.first.length
     token_row = board.board.reverse[row]
-
     connect = 0
-    counter = 0
-    while counter < column_size
-      if token_row[counter] == player.token
+    counter_right = 0
+    counter_left = 1
+
+    while column + counter_right < column_size
+      if token_row[column + counter_right] == player.token
         connect += 1
-        counter += 1
+        counter_right += 1
         if connect >= 4
           puts "horizontal connect 4!"
-          @game = true
+          @game_end = true
           break
         end
       else
-        connect = 0
-        counter += 1
+        break
+      end
+    end
+
+    while column - counter_left >= 0
+      if token_row[column - counter_left] == player.token
+        connect += 1
+        counter_left += 1
+        if connect >= 4
+          puts "horizontal connect 4!"
+          @game_end = true
+          break
+        end
+      else
+        break
       end
     end
   end
 
-  def vertical_connect?(row, number, player)
+  def vertical_connect?(row, column, player)
     row_size = board.board.length
-    token_row = board.board.reverse[row]
-    token_placement = token_row[number - 1]
     connect = 0
-    counter = 0
+    counter_down = 0
 
-    while counter < row_size
-      if board.board.reverse[counter][number - 1] == player.token
+    while row - counter_down >= 0
+      if board.board.reverse[row - counter_down][column] == player.token
         connect += 1
-        counter += 1
+        counter_down += 1
         if connect >= 4
           puts "vertical connect 4!"
-          @game = true
+          @game_end = true
           break
         end
       else
-        connect = 0
-        counter += 1
+        break
       end
     end
   end
 
-  def diagonal_connect?(row, number, player)
+  def diagonal_connect?(row, column, player)
     column_size = board.board.first.length
     row_size = board.board.length
     token_row = board.board.reverse[row]
-    column = number - 1
     token_placement = board.board.reverse[row][column]
 
     connect = 0
@@ -130,7 +140,7 @@ class Game
         counter_up += 1
         if connect >= 4
           puts "diagonal connect 4!"
-          @game = true
+          @game_end = true
           break
         end
       else
@@ -144,7 +154,7 @@ class Game
         counter_down += 1
         if connect >= 4
           puts "diagonal connect 4!"
-          @game = true
+          @game_end = true
           break
         end
       else
@@ -162,7 +172,7 @@ class Game
         counter_up += 1
         if connect >= 4
           puts "diagonal connect 4!"
-          @game = true
+          @game_end = true
           break
         end
       else
@@ -176,7 +186,7 @@ class Game
         counter_down += 1
         if connect >= 4
           puts "diagonal connect 4!"
-          @game = true
+          @game_end = true
           break
         end
       else
@@ -185,9 +195,9 @@ class Game
     end
   end
 
-  def connect_4?(row, number, player)
-    horizontal_connect?(row, number, player)
-    vertical_connect?(row, number, player)
-    diagonal_connect?(row, number, player)
+  def connect_4?(row, column, player)
+    horizontal_connect?(row, column, player)
+    vertical_connect?(row, column, player)
+    diagonal_connect?(row, column, player)
   end
 end

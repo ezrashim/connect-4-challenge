@@ -42,19 +42,17 @@ player_1 = Player.new(name_1, token_1)
 player_2 = Player.new(name_2, token_2)
 new_board = Board.new(7,7)
 new_game = Game.new(player_1, player_2, new_board)
-game_board = new_game.board.board
-column_size = game_board.first.length
-show_board = new_game.display_board
+new_game.display_board
 
 while true
   new_game.token_drop(player_1)
 
-  if new_game.game == true
+  if new_game.game_end == true
     puts "#{new_game.player_1.name} wins!!!"
     break
   end
   new_game.token_drop(player_2)
-  if new_game.game == true
+  if new_game.game_end == true
     puts "#{new_game.player_2.name} wins!!!"
     break
   end
