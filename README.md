@@ -2,7 +2,7 @@
 
 
 
-## Running the Game
+## How to Run the Game
 
 1. Open terminal (for Mac and Linux users) or the command prompt (for Windows users).
 2. Change the current working directory to the location where you want the cloned directory to be made.
