@@ -1,5 +1,5 @@
-require './player'
-require './board'
+require_relative 'player'
+require_relative 'board'
 
 class Game
   attr_accessor :player_1, :player_2, :board, :game_end

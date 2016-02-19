@@ -1,6 +1,6 @@
-require './player'
-require './board'
-require './game'
+require_relative 'player'
+require_relative 'board'
+require_relative 'game'
 
 puts "Please put the name of player 1:"
 name_1 = gets.chomp
