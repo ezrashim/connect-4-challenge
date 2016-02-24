@@ -2,12 +2,13 @@ require_relative 'player'
 require_relative 'board'
 
 class Game
-  attr_accessor :player_1, :player_2, :board, :game_end
+  attr_accessor :player_1, :player_2, :board, :game_end, :connect
   def initialize(player_1, player_2, board)
     @player_1 = player_1
     @player_2 = player_2
     @board = board
     @game_end = false
+    @connect = 0
   end
 
   def display_board
@@ -67,131 +68,98 @@ class Game
     display_board
   end
 
+  def end_game?
+    if @connect >= 4
+      @game_end = true
+    end
+  end
+
+  def connect_right?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row][column + 1]
+      @connect += 1
+      connect_right?(row, column + 1, player)
+    end
+  end
+
+  def connect_left?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row][column - 1]
+      @connect += 1
+      connect_left?(row, column - 1, player)
+    end
+  end
 
   def horizontal_connect?(row, column, player)
-    column_size = board.board.first.length
-    token_row = board.board.reverse[row]
-    connect = 0
-    counter_right = 0
-    counter_left = 1
-
-    while column + counter_right < column_size
-      if token_row[column + counter_right] == player.token
-        connect += 1
-        counter_right += 1
-        if connect >= 4
-          puts "horizontal connect 4!"
-          @game_end = true
-          break
-        end
-      else
-        break
-      end
-    end
-
-    while column - counter_left >= 0
-      if token_row[column - counter_left] == player.token
-        connect += 1
-        counter_left += 1
-        if connect >= 4
-          puts "horizontal connect 4!"
-          @game_end = true
-          break
-        end
-      else
-        break
-      end
-    end
+    @connect = 1
+    connect_right?(row, column, player)
+    connect_left?(row, column, player)
+    end_game?
   end
 
   def vertical_connect?(row, column, player)
-    row_size = board.board.length
-    connect = 0
-    counter_down = 0
-
-    while row - counter_down >= 0
-      if board.board.reverse[row - counter_down][column] == player.token
-        connect += 1
-        counter_down += 1
-        if connect >= 4
-          puts "vertical connect 4!"
-          @game_end = true
-          break
-        end
-      else
-        break
-      end
-    end
+    @connect = 1
+    connect_up?(row, column, player)
+    connect_down?(row, column, player)
+    end_game?
   end
 
   def diagonal_connect?(row, column, player)
-    column_size = board.board.first.length
-    row_size = board.board.length
-    token_row = board.board.reverse[row]
-    token_placement = board.board.reverse[row][column]
+    @connect = 1
+    connect_right_up?(row, column, player)
+    connect_left_down?(row, column, player)
+    end_game?
+    @connect = 1
+    connect_left_up?(row, column, player)
+    connect_right_down?(row, column, player)
+    end_game?
+  end
 
-    connect = 0
-    counter_up = 0
-    counter_down = 1
-
-    while (row + counter_up < row_size) && (column + counter_up < column_size)
-      if board.board.reverse[row + counter_up][column + counter_up] == player.token
-        connect += 1
-        counter_up += 1
-        if connect >= 4
-          puts "diagonal connect 4!"
-          @game_end = true
-          break
-        end
-      else
-        break
-      end
+  def connect_up?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row + 1][column]
+      @connect += 1
+      connect_up?(row + 1, column, player)
     end
+  end
 
-    while (connect < 4) && (row - counter_down >= 0) && (column - counter_down >= 0)
-      if board.board.reverse[row - counter_down][column - counter_down] == player.token
-        connect += 1
-        counter_down += 1
-        if connect >= 4
-          puts "diagonal connect 4!"
-          @game_end = true
-          break
-        end
-      else
-        break
-      end
+  def connect_down?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row - 1][column]
+      @connect += 1
+      connect_down?(row - 1, column, player)
     end
+  end
 
-    connect = 0
-    counter_up = 0
-    counter_down = 1
-
-    while (row + counter_up < row_size) && (column - counter_up >= 0)
-      if board.board.reverse[row + counter_up][column - counter_up] == player.token
-        connect += 1
-        counter_up += 1
-        if connect >= 4
-          puts "diagonal connect 4!"
-          @game_end = true
-          break
-        end
-      else
-        break
-      end
+  def connect_right_up?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row + 1][column + 1]
+      @connect += 1
+      connect_right_up?(row + 1, column + 1, player)
     end
+  end
 
-    while (connect < 4) && (row - counter_down >= 0) && (column + counter_down < column_size)
-      if board.board.reverse[row - counter_down][column + counter_down] == player.token
-        connect += 1
-        counter_down += 1
-        if connect >= 4
-          puts "diagonal connect 4!"
-          @game_end = true
-          break
-        end
-      else
-        break
-      end
+  def connect_left_down?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row - 1][column - 1]
+      @connect += 1
+      connect_left_down?(row - 1, column - 1, player)
+    end
+  end
+
+  def connect_right_down?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row - 1][column + 1]
+      @connect += 1
+      connect_right_down?(row - 1, column + 1, player)
+    end
+  end
+
+  def connect_left_up?(row, column, player)
+    game_board = board.board.reverse
+    if game_board[row][column] == game_board[row + 1][column - 1]
+      @connect += 1
+      connect_left_up?(row + 1, column - 1, player)
     end
   end
 
