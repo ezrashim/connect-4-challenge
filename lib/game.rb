@@ -15,7 +15,6 @@ class Game
   def display_board
     game_board = board.board
     column_size = game_board.first.length
-
     game_board.each do |row|
       line = ""
       row.each do |space|
@@ -28,15 +27,12 @@ class Game
       end
       puts "| #{line} |"
     end
-
     print "  "
     row = 0
-
     column_size.times do |column|
       row += 1
       print " #{row} "
     end
-
     puts "  "
   end
 
@@ -73,10 +69,12 @@ class Game
 
   def connect?(row, column, player, y = 0, x = 0)
     game_board = board.board.reverse
+    row_size = game_board.length
     if y == 0 && x == 0
       @count = false
+      @connect = 0
       connect?(row, column, player, 0, 1)
-    elsif game_board[row][column] == game_board[row + y][column + x]
+    elsif (row + y) < row_size && game_board[row][column] == game_board[row + y][column + x]
       @connect += 1
       connect?(row + y, column + x, player, y, x)
     elsif @count == false
@@ -88,11 +86,15 @@ class Game
         @game_end = true
       elsif y == 0 && x == -1
         @count = false
+        @connect = 0
         connect?(row, column, player, 1, 0)
       elsif y == -1 && x == 0
         @count = false
+        @connect = 0
         connect?(row, column, player, 1, 1)
       elsif y == -1 && x == -1
+        @count = false
+        @connect = 0
         connect?(row, column, player, -1, 1)
       end
     end
