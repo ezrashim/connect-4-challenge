@@ -18,13 +18,14 @@ while continue
   end
 end
 
-while true
+continue = true
+while continue
   puts "Please put the name of player 2:"
   name_2 = gets.chomp
 
   if name_2 != name_1
     puts "Welcome, #{name_2}!"
-    break
+    continue = false
   else
     puts "player 2 cannot have the same name as player 1."
   end
@@ -44,16 +45,18 @@ new_board = Board.new(7,7)
 new_game = Game.new(player_1, player_2, new_board)
 new_game.display_board
 
-while true
+continue = true
+while continue
   new_game.token_drop(player_1)
-
   if new_game.game_end == true
     puts "#{new_game.player_1.name} wins!!!"
-    break
+    continue = false
   end
-  new_game.token_drop(player_2)
-  if new_game.game_end == true
+  if continue
+    new_game.token_drop(player_2)
+    if new_game.game_end == true
     puts "#{new_game.player_2.name} wins!!!"
-    break
+    continue = false
+    end
   end
 end
